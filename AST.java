@@ -34,15 +34,15 @@ class Assignment extends Command{
     }
 }
 
-class While extends Command{
-    Condition c;
-    Command cmd;
-    While(Condition c, Command cmd){this.c=c; this.cmd=cmd;}
-    public void eval(Environment env){
-	while (c.eval(env))
-	    cmd.eval(env);
-    }
-}
+//class While extends Command{
+//    Condition c;
+//    Command cmd;
+//    While(Condition c, Command cmd){this.c=c; this.cmd=cmd;}
+//    public void eval(Environment env){
+//	while (c.eval(env))
+//	    cmd.eval(env);
+//    }
+//}
 
 class Output extends Command{
     Expr e;
@@ -82,35 +82,43 @@ abstract class Expr extends AST{
     abstract public Integer eval(Environment env);
 }
 
-class Addition extends Expr{
+class Latch extends Expr{
     Expr e1, e2;
-    Addition(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}    
-    public Integer eval(Environment env){	
-	return e1.eval(env) + e2.eval(env);
+    Latch(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+    public Integer eval(Environment env){
+        return e1.eval(env) + e2.eval(env);
     };
 }
 
-class Subtraction extends Expr{
-    Expr e1, e2;
-    Subtraction(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}    
-    public Integer eval(Environment env){	
-	return e1.eval(env) - e2.eval(env);
-    };
-}
-class Multiplication extends Expr{
-    Expr e1, e2;
-    Multiplication(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-    public Integer eval(Environment env){
-	return e1.eval(env) * e2.eval(env);
-    };
-}
-class Division extends Expr{
-    Expr e1, e2;
-    Division(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-    public Integer eval(Environment env){
-	return e1.eval(env) / e2.eval(env);
-    };
-}
+//class Addition extends Expr{
+//    Expr e1, e2;
+//    Addition(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+//    public Integer eval(Environment env){
+//	return e1.eval(env) + e2.eval(env);
+//    };
+//}
+//
+//class Subtraction extends Expr{
+//    Expr e1, e2;
+//    Subtraction(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+//    public Integer eval(Environment env){
+//	return e1.eval(env) - e2.eval(env);
+//    };
+//}
+//class Multiplication extends Expr{
+//    Expr e1, e2;
+//    Multiplication(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+//    public Integer eval(Environment env){
+//	return e1.eval(env) * e2.eval(env);
+//    };
+//}
+//class Division extends Expr{
+//    Expr e1, e2;
+//    Division(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+//    public Integer eval(Environment env){
+//	return e1.eval(env) / e2.eval(env);
+//    };
+//}
 
 class Constant extends Expr{
     public Integer i;

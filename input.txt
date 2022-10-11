@@ -1,5 +1,6 @@
 // Just a simple calculation:
 
+
 x=3;
 b=2;
 r=1;
@@ -11,3 +12,6 @@ while(x>0){
 
 output(r);
 output(x);
+
+
+

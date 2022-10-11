@@ -85,9 +85,9 @@ class Interpreter extends AbstractParseTreeVisitor<AST> implements implVisitor<A
 	return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
     }
 
-    public AST visitWhile(implParser.WhileContext ctx){
-	return new While((Condition) visit(ctx.c), (Command) visit(ctx.b));
-    }
+//    public AST visitWhile(implParser.WhileContext ctx){
+//	return new While((Condition) visit(ctx.c), (Command) visit(ctx.b));
+//    }
 
     public AST visitOutput(implParser.OutputContext ctx){
 	return new Output((Expr) visit(ctx.e));
@@ -101,19 +101,22 @@ class Interpreter extends AbstractParseTreeVisitor<AST> implements implVisitor<A
 	    return null;
 	}	   
     }
-    
-    public AST visitMultiplication(implParser.MultiplicationContext ctx){
-	if (ctx.op.getText().equals("*"))
-	    return new Multiplication((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-	else
-	    return new Division((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-    };
-    public AST visitAddition(implParser.AdditionContext ctx){
-	if (ctx.op.getText().equals("+"))
-	    return new Addition((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-	else
-	    return new Subtraction((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-    };
+
+	//
+//    public AST visitMultiplication(implParser.MultiplicationContext ctx){
+//	if (ctx.op.getText().equals("*"))
+//	    return new Multiplication((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+//	else
+//	    return new Division((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+//    };
+//    public AST visitAddition(implParser.AdditionContext ctx){
+//	if (ctx.op.getText().equals("+"))
+//	    return new Addition((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+//	else
+//	    return new Subtraction((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+//    };
+	//
+
     public AST visitVariable(implParser.VariableContext ctx){
 	return new Variable(ctx.x.getText());
     };
@@ -123,5 +126,8 @@ class Interpreter extends AbstractParseTreeVisitor<AST> implements implVisitor<A
     public AST visitParentheses(implParser.ParenthesesContext ctx){
 	return visit(ctx.e1);
     };
+
+
+
 }
 

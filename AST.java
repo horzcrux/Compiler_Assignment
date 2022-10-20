@@ -34,10 +34,18 @@ class Assignment extends Command{
     }
 }
 
-class UpdateDeclaration extends Command{
+class Update extends Command{
     List<Assignment> assignments;
-    UpdateDeclaration(List<Assignment> assignments){this.assignments}
+    Update(List<Assignment> assignments){this.assignments=assignments;}
+    public void eval(Environment env){for(var c:assignments) c.eval(env);}
+}
 
+class Outputs extends Command{
+    List<String> varname;
+    Outputs(List<String> varname){this.varname=varname;}
+    public void eval(Environment env){
+        env.addOutputs(varname);
+    }
 }
 
 class Output extends Command{
@@ -53,22 +61,22 @@ class Output extends Command{
     }
 }
 
-class Simulate extends Command{
-    String varname;
-    Expr e;
-    Simulate(String varname, Expr e){ this.varname=varname; this.e=e;}
-    public void eval(Environment env){
-        env.setVariable(varname,e.eval(env));
-    }
-
-    env.getVariable();
-    s.getVariable().size();
-    int counter = button.length;
-    for(int i = 0; i < counter; i++)
-    {
-        System.out.println(i);
-    }
-}
+//class Simulate extends Command{
+//    String varname;
+//    Expr e;
+//    Simulate(String varname, Expr e){ this.varname=varname; this.e=e;}
+//    public void eval(Environment env){
+//        env.setVariable(varname,e.eval(env));
+//    }
+//
+//    env.getVariable();
+//    s.getVariable().size();
+//    int counter = button.length;
+//    for(int i = 0; i < counter; i++)
+//    {
+//        System.out.println(i);
+//    }
+//}
 
 
 abstract class Expr extends AST{

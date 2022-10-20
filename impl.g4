@@ -12,11 +12,10 @@ command : x=IDENTIFIER '=' e=expr               # Assignment
 	| '.inputs' e=expr+                         # Inputs
 	| '.outputs' e=expr+                        # Outputs
 	| '.latch' e1=expr '->' e2=expr             # Latch
-	| '.update' updatedecl                      # Update
+	| '.update' c=command+                      # Update
 	;
 
-updatedecl : command+                           # UpdateDeclaration
-;
+
 simdecl : '.simulate' (x=IDENTIFIER '=' c=CONST)    # Simulate
 ;
 

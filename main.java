@@ -75,19 +75,19 @@ class Interpreter extends AbstractParseTreeVisitor<AST> implements implVisitor<A
 		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 	public AST visitInputs(implParser.InputsContext ctx){
-		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+		return new Inputs(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 	public AST visitOutputs(implParser.OutputsContext ctx){
-		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+		return new Outputs(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 	public AST visitLatch(implParser.LatchContext ctx){
-		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+		return new Latch(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 	public AST visitUpdate(implParser.StartUpdate ctx){
-		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+		return new Update(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 	public AST visitSimulate(implParser.StartSimulate ctx){
-		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+		return new Simulate(ctx.x.getText(),(Expr) visit(ctx.e));
 	}
 
 	//Expressions

@@ -34,6 +34,11 @@ class Assignment extends Command{
     }
 }
 
+class UpdateDeclaration extends Command{
+    List<Assignment> assignments;
+    UpdateDeclaration(List<Assignment> assignments){this.assignments}
+
+}
 
 class Output extends Command{
     Expr e;
@@ -49,8 +54,8 @@ class Output extends Command{
 }
 
 class Simulate extends Command{
-    String
-
+    String varname;
+    Expr e;
     Simulate(String varname, Expr e){ this.varname=varname; this.e=e;}
     public void eval(Environment env){
         env.setVariable(varname,e.eval(env));
@@ -65,24 +70,25 @@ class Simulate extends Command{
     }
 }
 
+
 abstract class Expr extends AST{
-    abstract public Boolean eval(Environment env);
+    abstract public Boolean[] eval(Environment env);
 }
 
 class Latch extends Expr{
     Expr e;
     Latch(Expr e){this.e=e;}
-    public Boolean eval(Environment env){
+    public Boolean[] eval(Environment env){
         return e.eval(env);
     };
 }
 
 //Command conditons
 class Not extends Expr{
-    Expr e1;
-    Not(Expr e){this.e1=e1;}
-    public Boolean eval(Environment env){
-        return !e1.eval(env);
+    Expr e;
+    Not(Expr e){this.e=e;}
+    public Boolean[] eval(Environment env){
+        return !e.eval(env);
     }
 }
 class Or extends Expr{
@@ -103,10 +109,24 @@ class And extends Expr{
 
 class Constant extends Expr{
     public Integer i;
+    public String s = String.valueOf(i);
+    int l = s.length();
     Constant(Integer i){ this.i=i;}
-    public Integer eval(Environment env){
-        return i;
-    };
+
+    Boolean[] array = new Boolean[l];
+
+
+
+    public Boolean[] eval(Environment env) {
+        for (int j = 0; j  < l; j++) {
+            if (s.charAt(j) == 1) {array[j] = true;}
+            else {array[j] = false;}
+        }
+        return array;
+
+    }
+
+
 };
 
 class Variable extends Expr{

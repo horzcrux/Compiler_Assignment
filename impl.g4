@@ -3,7 +3,7 @@ grammar impl;
 start   : cs=commands EOF;
 
 
-commands : cmds+=command* ;
+commands : cmds+=command* simdecl ;
 
 
 command : x=IDENTIFIER '=' e=expr               # Assignment
@@ -13,12 +13,11 @@ command : x=IDENTIFIER '=' e=expr               # Assignment
 	| '.outputs' e=expr+                        # Outputs
 	| '.latch' e1=expr '->' e2=expr             # Latch
 	| '.update' updatedecl                      # Update
-    | '.simulate' simdecl                       # Simulate
 	;
 
-updatedecl : (x=IDENTIFIER '=' e=expr)+         # UpdateDeclaration
+updatedecl : command+                           # UpdateDeclaration
 ;
-simdecl : (x=IDENTIFIER '=' c=CONST)
+simdecl : '.simulate' (x=IDENTIFIER '=' c=CONST)    # Simulate
 ;
 
 expr : '(' e1=expr ')'   	                    # Parentheses

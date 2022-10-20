@@ -7,40 +7,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class main {
-    public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException{
 
-	// we expect exactly one argument: the name of the input file
-	if (args.length!=1) {
-	    System.err.println("\n");
-	    System.err.println("Impl Interpreter\n");
-	    System.err.println("=================\n\n");
-	    System.err.println("Please give as input argument a filename\n");
-	    System.exit(-1);
+		// we expect exactly one argument: the name of the input file
+		if (args.length!=1) {
+			System.err.println("\n");
+			System.err.println("Impl Interpreter\n");
+			System.err.println("=================\n\n");
+			System.err.println("Please give as input argument a filename\n");
+			System.exit(-1);
+		}
+		String filename=args[0];
+
+		// open the input file
+		CharStream input = CharStreams.fromFileName(filename);
+		//new ANTLRFileStream (filename); // depricated
+
+		// create a lexer/scanner
+		implLexer lex = new implLexer(input);
+
+		// get the stream of tokens from the scanner
+		CommonTokenStream tokens = new CommonTokenStream(lex);
+
+		// create a parser
+		implParser parser = new implParser(tokens);
+
+		// and parse anything from the grammar for "start"
+		ParseTree parseTree = parser.start();
+
+		// Construct an interpreter and run it on the parse tree
+		Interpreter interpreter = new Interpreter();
+		Command result=(Command)interpreter.visit(parseTree);
+		//System.out.println("The result is: "+
+		result.eval(new Environment());
 	}
-	String filename=args[0];
-
-	// open the input file
-	CharStream input = CharStreams.fromFileName(filename);
-	    //new ANTLRFileStream (filename); // depricated
-	
-	// create a lexer/scanner
-	implLexer lex = new implLexer(input);
-	
-	// get the stream of tokens from the scanner
-	CommonTokenStream tokens = new CommonTokenStream(lex);
-	
-	// create a parser
-	implParser parser = new implParser(tokens);
-	
-	// and parse anything from the grammar for "start"
-	ParseTree parseTree = parser.start();
-
-	// Construct an interpreter and run it on the parse tree
-	Interpreter interpreter = new Interpreter();
-	Command result=(Command)interpreter.visit(parseTree);
-	//System.out.println("The result is: "+
-	result.eval(new Environment());
-    }
 }
 
 // We write an interpreter that implements interface
@@ -50,83 +50,67 @@ public class main {
 
 class Interpreter extends AbstractParseTreeVisitor<AST> implements implVisitor<AST> {
 
-    public AST visitStart(implParser.StartContext ctx){
-	return visit(ctx.cs);
-    };
-
-    /*
-    public AST visitSequence(implParser.SequenceContext ctx){
-	return new Sequence((Command)visit(ctx.c),(Command)visit(ctx.cs));
-	}*/
-
-    public AST visitCommands(implParser.CommandsContext ctx){
-	List<Command> cmds = new ArrayList<Command>();
-	for(implParser.CommandContext c : ctx.cmds){
-	    cmds.add((Command) visit(c));
+	public AST visitStart(implParser.StartContext ctx){
+		return visit(ctx.cs);
+	};
+	public AST visitOutput(implParser.OutputContext ctx){
+		return new Output((Expr) visit(ctx.e));
 	}
-	
-	return new Sequence(cmds);
-    }
 
-    /*
-    public AST visitNOP(implParser.NOPContext ctx){
-	return new NOP();
-	}*/
-    public AST visitMultiCommand(implParser.MultiCommandContext ctx){
-	return visit(ctx.cs);
-    };
-    
-    
-    public AST  visitSingleCommand(implParser.SingleCommandContext ctx){
-	return visit(ctx.c);
-    }
+	public AST visitCommands(implParser.CommandsContext ctx){
+		List<Command> cmds = new ArrayList<Command>();
+		for(implParser.CommandContext c : ctx.cmds){
+			cmds.add((Command) visit(c));
+		}
 
-    public AST visitAssignment(implParser.AssignmentContext ctx){
-	return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
-    }
+		return new Sequence(cmds);
+	}
 
-//    public AST visitWhile(implParser.WhileContext ctx){
-//	return new While((Condition) visit(ctx.c), (Command) visit(ctx.b));
-//    }
+	//Commands
+	public AST visitAssignment(implParser.AssignmentContext ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
 
-    public AST visitOutput(implParser.OutputContext ctx){
-	return new Output((Expr) visit(ctx.e));
-    }
+	public AST visitStartHardware(implParser.StartHardwareContext ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
+	public AST visitInputs(implParser.InputsContext ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
+	public AST visitOutputs(implParser.OutputsContext ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
+	public AST visitLatch(implParser.LatchContext ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
+	public AST visitUpdate(implParser.StartUpdate ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
+	public AST visitSimulate(implParser.StartSimulate ctx){
+		return new Assignment(ctx.x.getText(),(Expr) visit(ctx.e));
+	}
 
-    public AST visitCondition(implParser.ConditionContext ctx){
-	if (ctx.op.getText().equals(">"))
-	    return new Greater((Expr) visit(ctx.e1), (Expr) visit(ctx.e2));
-	else{
-	    System.err.println("Condition type not implemented");
-	    return null;
-	}	   
-    }
+	//Expressions
+	public AST visitVariable(implParser.VariableContext ctx){
+		return new Variable(ctx.x.getText());
+	};
+	public AST visitConstant(implParser.ConstantContext ctx){
+		return new Constant(Integer.parseInt(ctx.c.getText()));
+	};
 
-	//
-//    public AST visitMultiplication(implParser.MultiplicationContext ctx){
-//	if (ctx.op.getText().equals("*"))
-//	    return new Multiplication((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-//	else
-//	    return new Division((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-//    };
-//    public AST visitAddition(implParser.AdditionContext ctx){
-//	if (ctx.op.getText().equals("+"))
-//	    return new Addition((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-//	else
-//	    return new Subtraction((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
-//    };
-	//
-
-    public AST visitVariable(implParser.VariableContext ctx){
-	return new Variable(ctx.x.getText());
-    };
-    public AST visitConstant(implParser.ConstantContext ctx){
-	return new Constant(Integer.parseInt(ctx.c.getText()));
-    };
-    public AST visitParentheses(implParser.ParenthesesContext ctx){
-	return visit(ctx.e1);
-    };
-
+	//Condition expressions
+	public AST visitParentheses(implParser.ParenthesesContext ctx){
+		return visit(ctx.e1);
+	};
+	public AST visitNot(implParser.NotContext ctx){
+		return new Not((Expr)visit(ctx.e1));
+	}
+	public AST visitAnd(implParser.AndContext ctx){
+		return new And((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+	}
+	public AST visitOr(implParser.OrContext ctx){
+		return new Or((Expr)visit(ctx.e1),(Expr)visit(ctx.e2));
+	}
 
 
 }

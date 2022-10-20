@@ -16,7 +16,7 @@ class Sequence extends Command{
     List<Command> cmds;
     Sequence(List<Command> cmds){this.cmds=cmds;}
     public void eval(Environment env){
-	for(var c:cmds) c.eval(env);
+        for(var c:cmds) c.eval(env);
     }
 }
 
@@ -30,114 +30,89 @@ class Assignment extends Command{
     Expr e;
     Assignment(String varname, Expr e){ this.varname=varname; this.e=e;}
     public void eval(Environment env){
-	env.setVariable(varname,e.eval(env));
+        env.setVariable(varname,e.eval(env));
     }
 }
 
-//class While extends Command{
-//    Condition c;
-//    Command cmd;
-//    While(Condition c, Command cmd){this.c=c; this.cmd=cmd;}
-//    public void eval(Environment env){
-//	while (c.eval(env))
-//	    cmd.eval(env);
-//    }
-//}
 
 class Output extends Command{
     Expr e;
     Output(Expr e){ this.e=e;}
     public void eval(Environment env){
-	System.out.println(e.eval(env));
+        if (e.eval(env)) {
+            System.out.println(1);
+        }
+        else {
+            System.out.println(0);
+        }
     }
 }
 
-abstract class Condition extends AST{
-    abstract public Boolean eval(Environment env);
-};
+class Simulate extends Command{
+    String
 
-class Greater extends Condition{
-    Expr e1,e2;
-    Greater(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-    public Boolean eval(Environment env){
-	return e1.eval(env) > e2.eval(env);
-    }   
+    Simulate(String varname, Expr e){ this.varname=varname; this.e=e;}
+    public void eval(Environment env){
+        env.setVariable(varname,e.eval(env));
+    }
+
+    env.getVariable();
+    s.getVariable().size();
+    int counter = button.length;
+    for(int i = 0; i < counter; i++)
+    {
+        System.out.println(i);
+    }
 }
-
-/*
-class ExprList extends AST{
-    List<Expr> es;
-    ExprList(List<Expr> es){
-	this.es=es;
-    }
-    public void eval(){
-	for(Expr e:es){
-	    System.out.println(e.eval());
-	}
-    }
-    }*/
-
 
 abstract class Expr extends AST{
-    abstract public Integer eval(Environment env);
+    abstract public Boolean eval(Environment env);
 }
 
 class Latch extends Expr{
-    Expr e1, e2;
-    Latch(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-    public Integer eval(Environment env){
-        return e1.eval(env) + e2.eval(env);
+    Expr e;
+    Latch(Expr e){this.e=e;}
+    public Boolean eval(Environment env){
+        return e.eval(env);
     };
 }
 
-//class Addition extends Expr{
-//    Expr e1, e2;
-//    Addition(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-//    public Integer eval(Environment env){
-//	return e1.eval(env) + e2.eval(env);
-//    };
-//}
-//
-//class Subtraction extends Expr{
-//    Expr e1, e2;
-//    Subtraction(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-//    public Integer eval(Environment env){
-//	return e1.eval(env) - e2.eval(env);
-//    };
-//}
-//class Multiplication extends Expr{
-//    Expr e1, e2;
-//    Multiplication(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-//    public Integer eval(Environment env){
-//	return e1.eval(env) * e2.eval(env);
-//    };
-//}
-//class Division extends Expr{
-//    Expr e1, e2;
-//    Division(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
-//    public Integer eval(Environment env){
-//	return e1.eval(env) / e2.eval(env);
-//    };
-//}
+//Command conditons
+class Not extends Expr{
+    Expr e1;
+    Not(Expr e){this.e1=e1;}
+    public Boolean eval(Environment env){
+        return !e1.eval(env);
+    }
+}
+class Or extends Expr{
+    Expr e1, e2;
+    Or(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+    public Boolean eval(Environment env){
+        return e1.eval(env) || e2.eval(env);
+    }
+}
+class And extends Expr{
+    Expr e1, e2;
+    And(Expr e1, Expr e2){this.e1=e1; this.e2=e2;}
+    public Boolean eval(Environment env){
+        return e1.eval(env) && e2.eval(env);
+    };
+}
+
 
 class Constant extends Expr{
     public Integer i;
     Constant(Integer i){ this.i=i;}
     public Integer eval(Environment env){
-	return i;
+        return i;
     };
 };
+
 class Variable extends Expr{
     public String varname;
     Variable(String varname){this.varname=varname;}
-    public Integer eval(Environment env){
-	return 	env.getVariable(varname);
+    public Boolean[] eval(Environment env){
+        return 	env.getVariable(varname);
     };
 };
-
-
-// 3*(y+1)
-/* 
-Expr e= new Multiplication(new Constant(3),
-                           new Addition(new Variable("y"),
-			                new Constant(1))) */
